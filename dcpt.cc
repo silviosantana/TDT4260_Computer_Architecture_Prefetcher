@@ -2,6 +2,7 @@
 
 #define MAX_DCPT_SIZE 98
 #define DELTA_BUFFER_SIZE 19
+#define MAX_INFLIGHT_SIZE 32
 
 #define true 1
 #define false 0
@@ -21,7 +22,8 @@ struct Dcpt
 class DCPT
 {
 private:
-   list<Dcpt> dcpt; 
+   list<Dcpt> dcpt;
+   list<Addr> inFlight;
 public:
     void insert_entry(Addr pc, Addr lastAddress){
         Dcpt entry;
@@ -82,6 +84,23 @@ public:
                 it->lastAddress = ma;
                 return true;
             }
+        }
+        return false;
+    }
+
+    void insert_in_flight(Addr candidate){
+        if (inFlight.size() < MAX_INFLIGHT_SIZE)
+            inFlight.push_back(candidate);
+        else {
+            inFlight.pop_front();
+            inFlight.push_back(candidate);
+        }
+    }
+
+    int is_in_flight (Addr candidate){
+        for (list<Addr>::iterator it=inFlight.begin(); it != inFlight.end(); ++it){
+            if (*it == candidate)
+                return true;
         }
         return false;
     }

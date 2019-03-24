@@ -30,23 +30,56 @@ void delta_correlation(Dcpt entry){
     candidates.clear();
     if (entry.deltas.size() > 1){
         list<int>::iterator it = entry.deltas.end();
+        it--;
         d1 = *it;
         it--;
         d2 = *it;
 
         address = entry.lastAddress;
-        //for loop
+        //for u,v in entry deltas 
+        for (list<int>::iterator u=entry.deltas.begin(); u != it; ++u){
+            list<int>::iterator v = u;
+            v++;
+            //if u = d2 and v = d1
+            if (*u == d2 && *v == d1){
+                //for delta remaining in deltas
+                list<int>::iterator d = v;
+                for (d++; d != entry.deltas.end(); ++d){
+                    address = address + *d;
+                    candidates.push_back(address);
+                }
+            }
+        }
     }
-    
-
 }
 
 void prefetch_filter(Dcpt entry){
+    prefetches.clear();
+    
+    for (list<Addr>::iterator candidate = candidates.begin(); candidate != candidates.end(); ++candidate){
+        if (*candidate == entry.lastPreftch){
+            prefetches.clear();
+        }
+        
+        if (!dcpt.is_in_flight(*candidate) && !in_cache(*candidate) && !in_mshr_queue(*candidate)){
+            prefetches.push_back(*candidate);
+            dcpt.insert_in_flight(*candidate);
+            entry.lastPreftch = *candidate;
+        }
+    }
 
 }
 
 void issue_prefetches(){
-
+    int lenght = prefetches.size();
+    Addr memAddr;
+    for (int i = 0; i < lenght; i++){
+        memAddr = prefetches.front();
+        prefetches.pop_front();
+        if (memAddr <= MAX_PHYS_MEM_ADDR){
+            issue_prefetch(memAddr);
+        }
+    }
 }
 
 void prefetch_access(AccessStat stat)
