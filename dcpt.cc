@@ -9,12 +9,14 @@
 
 using namespace std;
 
+typedef int64_t Delta_t;
+
 struct Dcpt
 {
     Addr pc;
     Addr lastAddress;
     Addr lastPreftch;
-    list<uint64_t> deltas;
+    list<Delta_t> deltas;
     int deltaPointer;
 };
 
@@ -62,7 +64,7 @@ public:
         return empty;  
     }
 
-    int add_to_delta_list (Addr pc, int delta){
+    int add_to_delta_list (Addr pc, Delta_t delta){
         for (list<Dcpt>::iterator it=dcpt.begin(); it != dcpt.end(); ++it){
             if (it->pc == pc){
                 if (it->deltas.size() < DELTA_BUFFER_SIZE){

@@ -24,12 +24,12 @@ void prefetch_init(void)
 }
 
 void delta_correlation(Dcpt entry){
-    uint64_t d1, d2;
+    Delta_t d1, d2;
     Addr address;
 
     candidates.clear();
     if (entry.deltas.size() > 1){
-        list<uint64_t>::iterator it = entry.deltas.end();
+        list<Delta_t>::iterator it = entry.deltas.end();
         it--;
         d1 = *it;
         it--;
@@ -37,13 +37,13 @@ void delta_correlation(Dcpt entry){
 
         address = entry.lastAddress;
         //for u,v in entry deltas 
-        for (list<uint64_t>::iterator u=entry.deltas.begin(); u != it; ++u){
-            list<uint64_t>::iterator v = u;
+        for (list<Delta_t>::iterator u=entry.deltas.begin(); u != it; ++u){
+            list<Delta_t>::iterator v = u;
             v++;
             //if u = d2 and v = d1
             if (*u == d2 && *v == d1){
                 //for delta remaining in deltas
-                list<uint64_t>::iterator d = v;
+                list<Delta_t>::iterator d = v;
                 for (d++; d != entry.deltas.end(); ++d){
                     address = address + *d;
                     candidates.push_back(address);
@@ -83,7 +83,7 @@ void prefetch_access(AccessStat stat)
     //if (stat.miss) {
         if(dcpt.is_present(stat.pc)){
             Dcpt entry = dcpt.get_entry(stat.pc);
-            uint64_t delta = stat.mem_addr - entry.lastAddress; 
+            Delta_t delta = stat.mem_addr - entry.lastAddress; 
 
             if (delta != 0){
                 //add delta to delta list
