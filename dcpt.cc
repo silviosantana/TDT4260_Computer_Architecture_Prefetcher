@@ -1,7 +1,7 @@
 #include <list>
 
 #define MAX_DCPT_SIZE 98
-#define DELTA_BUFFER_SIZE 19
+#define DELTA_BUFFER_SIZE 6
 #define MAX_INFLIGHT_SIZE 32
 
 #define true 1
