@@ -45,7 +45,7 @@ void delta_correlation(Dcpt entry){
                 //for delta remaining in deltas
                 list<Delta_t>::iterator d = v;
                 for (d++; d != entry.deltas.end(); ++d){
-                    address = address + *d;
+                    address = address + *d * BLOCK_SIZE;
                     candidates.push_back(address);
                 }
             }
@@ -84,6 +84,7 @@ void prefetch_access(AccessStat stat)
         if(dcpt.is_present(stat.pc)){
             Dcpt entry = dcpt.get_entry(stat.pc);
             Delta_t delta = stat.mem_addr - entry.lastAddress; 
+            delta /= BLOCK_SIZE >> 1;
 
             if (delta != 0){
                 //add delta to delta list
