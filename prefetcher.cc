@@ -24,12 +24,12 @@ void prefetch_init(void)
 }
 
 void delta_correlation(Dcpt entry){
-    int d1, d2;
+    uint64_t d1, d2;
     Addr address;
 
     candidates.clear();
     if (entry.deltas.size() > 1){
-        list<int>::iterator it = entry.deltas.end();
+        list<uint64_t>::iterator it = entry.deltas.end();
         it--;
         d1 = *it;
         it--;
@@ -37,13 +37,13 @@ void delta_correlation(Dcpt entry){
 
         address = entry.lastAddress;
         //for u,v in entry deltas 
-        for (list<int>::iterator u=entry.deltas.begin(); u != it; ++u){
-            list<int>::iterator v = u;
+        for (list<uint64_t>::iterator u=entry.deltas.begin(); u != it; ++u){
+            list<uint64_t>::iterator v = u;
             v++;
             //if u = d2 and v = d1
             if (*u == d2 && *v == d1){
                 //for delta remaining in deltas
-                list<int>::iterator d = v;
+                list<uint64_t>::iterator d = v;
                 for (d++; d != entry.deltas.end(); ++d){
                     address = address + *d;
                     candidates.push_back(address);
@@ -57,9 +57,9 @@ void prefetch_filter(Dcpt entry){
     prefetches.clear();
     
     for (list<Addr>::iterator candidate = candidates.begin(); candidate != candidates.end(); ++candidate){
-        if (*candidate == entry.lastPreftch){
+        /*if (*candidate == entry.lastPreftch){
             prefetches.clear();
-        }
+        }*/
         
         if (!dcpt.is_in_flight(*candidate) && !in_cache(*candidate) && !in_mshr_queue(*candidate)){
             prefetches.push_back(*candidate);
@@ -71,23 +71,19 @@ void prefetch_filter(Dcpt entry){
 }
 
 void issue_prefetches(){
-    int lenght = prefetches.size();
-    Addr memAddr;
-    for (int i = 0; i < lenght; i++){
-        memAddr = prefetches.front();
-        prefetches.pop_front();
-        if (memAddr <= MAX_PHYS_MEM_ADDR){
-            issue_prefetch(memAddr);
+    for (list<Addr>::iterator it = prefetches.begin(); it != prefetches.end(); ++it) {
+        if (*it <= MAX_PHYS_MEM_ADDR){
+            issue_prefetch(*it);
         }
-    }
+    }  
 }
 
 void prefetch_access(AccessStat stat)
 {
-    if (stat.miss) {
+    //if (stat.miss) {
         if(dcpt.is_present(stat.pc)){
             Dcpt entry = dcpt.get_entry(stat.pc);
-            int delta = stat.mem_addr - entry.lastAddress; 
+            uint64_t delta = stat.mem_addr - entry.lastAddress; 
 
             if (delta != 0){
                 //add delta to delta list
@@ -109,7 +105,7 @@ void prefetch_access(AccessStat stat)
         }else{
             dcpt.insert_entry(stat.pc, stat.mem_addr);
         }
-    }
+    //}
 }
 
 void prefetch_complete(Addr addr) {

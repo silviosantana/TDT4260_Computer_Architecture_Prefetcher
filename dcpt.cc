@@ -14,7 +14,7 @@ struct Dcpt
     Addr pc;
     Addr lastAddress;
     Addr lastPreftch;
-    list<int> deltas;
+    list<uint64_t> deltas;
     int deltaPointer;
 };
 
