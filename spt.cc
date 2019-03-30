@@ -14,7 +14,7 @@ struct Spt
     Addr pc;
     Addr ma;
     int valid;
-    int stride;
+    int64_t stride;
     State state;
 };
 
@@ -100,7 +100,7 @@ public:
         return false;
     }
 
-    int get_stride (Addr pc){
+    int64_t get_stride (Addr pc){
         for (list<Spt>::iterator it=spt.begin(); it != spt.end(); ++it){
             if (it->pc == pc){
                 return it->stride;
@@ -109,7 +109,7 @@ public:
         return false;
     }
 
-    int set_stride (Addr pc, int stride){
+    int set_stride (Addr pc, int64_t stride){
         for (list<Spt>::iterator it=spt.begin(); it != spt.end(); ++it){
             if (it->pc == pc){
                 it->stride = stride;

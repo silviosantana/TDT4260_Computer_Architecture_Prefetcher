@@ -21,10 +21,10 @@ void prefetch_init(void)
 
 void prefetch_access(AccessStat stat)
 {
-    if (stat.miss) {
+    //if (stat.miss) {
         if(spt.is_present(stat.pc)){
             Spt entry = spt.get_entry(stat.pc);
-            int newStride = stat.mem_addr - entry.ma; 
+            int64_t newStride = stat.mem_addr - entry.ma; 
             Addr newMemAddr = stat.mem_addr + newStride;
 
             int should_fetch = 0;
@@ -80,7 +80,7 @@ void prefetch_access(AccessStat stat)
         }else{
             spt.insert_entry(stat.pc, stat.mem_addr);
         }
-    }
+    //}
 }
 
 void prefetch_complete(Addr addr) {

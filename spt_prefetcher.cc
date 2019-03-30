@@ -21,10 +21,10 @@ void prefetch_init(void)
 
 void prefetch_access(AccessStat stat)
 {
-    if (stat.miss) {
+    //if (stat.miss) {
         if(spt.is_present(stat.pc)){
             Addr last_ma = spt.get_ma(stat.pc);
-            int stride = stat.mem_addr - last_ma;
+            int64_t stride = stat.mem_addr - last_ma;
             Addr newMemAddr = stat.mem_addr + stride;
             if (stride != 0 && newMemAddr <= MAX_PHYS_MEM_ADDR && !in_cache(newMemAddr) && !in_mshr_queue(newMemAddr)){
                 issue_prefetch(newMemAddr);
@@ -33,7 +33,7 @@ void prefetch_access(AccessStat stat)
         }else{
             spt.insert_entry(stat.pc, stat.mem_addr);
         }
-    }
+    //}
 }
 
 void prefetch_complete(Addr addr) {
