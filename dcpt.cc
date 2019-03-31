@@ -1,10 +1,10 @@
 #include <list>
 #include <cmath>
 
-#define MAX_DCPT_SIZE 98
+#define MAX_DCPT_SIZE 100
 #define DELTA_BUFFER_SIZE 6
 #define MAX_INFLIGHT_SIZE 32
-#define DELTA_BITFIELD_WIDTH 10
+#define DELTA_BITFIELD_WIDTH 16
 #define MAX_DELTA_VALUE (int64_t)(pow(2, DELTA_BITFIELD_WIDTH) - 1)
 
 #define true 1
