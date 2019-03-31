@@ -1,8 +1,11 @@
 #include <list>
+#include <cmath>
 
 #define MAX_DCPT_SIZE 98
 #define DELTA_BUFFER_SIZE 6
 #define MAX_INFLIGHT_SIZE 32
+#define DELTA_BITFIELD_WIDTH 10
+#define MAX_DELTA_VALUE (int64_t)(pow(2, DELTA_BITFIELD_WIDTH) - 1)
 
 #define true 1
 #define false 0
@@ -65,6 +68,9 @@ public:
     }
 
     int add_to_delta_list (Addr pc, Delta_t delta){
+        if (delta < -MAX_DELTA_VALUE || delta > MAX_DELTA_VALUE){
+            delta = 0;
+        }
         for (list<Dcpt>::iterator it=dcpt.begin(); it != dcpt.end(); ++it){
             if (it->pc == pc){
                 if (it->deltas.size() < DELTA_BUFFER_SIZE){

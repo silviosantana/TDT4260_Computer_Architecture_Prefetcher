@@ -83,8 +83,9 @@ void prefetch_access(AccessStat stat)
     //if (stat.miss) {
         if(dcpt.is_present(stat.pc)){
             Dcpt entry = dcpt.get_entry(stat.pc);
-            Delta_t delta = stat.mem_addr - entry.lastAddress; 
+            Delta_t delta = stat.mem_addr - entry.lastAddress;
             delta /= BLOCK_SIZE >> 1;
+
 
             if (delta != 0){
                 //add delta to delta list
